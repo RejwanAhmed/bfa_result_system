@@ -1,0 +1,57 @@
+<?php 
+    // semester wise cgpa calculation er jonno ei function use kora hocche.
+    function semester_wise_cgpa_calculation($course_semester, $department_id)
+    {
+        include('gpa_counting_function.php');
+        include('lib/db_connection.php');
+        $first_semester_result_qry = "SELECT r.id, r.course_id, r.actual_session, r.current_session, st.id as student_id, r.total_internal, r.total_final_marks FROM result as r JOIN student_information as st ON r.student_id = st.id WHERE r.current_session = '$_GET[session]' AND r.course_year = '$_GET[course_year]' AND r.course_semester = '$course_semester' AND r.department_id = '$department_id' ORDER BY r.actual_session DESC, st.roll_no ASC, st.actual_session DESC, r.course_id ASC  ";
+        $run_first_semester_result_qry = mysqli_query($conn, $first_semester_result_qry);
+
+        $first_semester_assigned_course = "SELECT ac.course_id, c.course_credit  FROM assigned_course_information as ac INNER JOIN course_information as c ON ac.course_id = c.id WHERE ac.session = '$_GET[session]' AND ac.course_year = '$_GET[course_year]' AND ac.course_semester = '$course_semester' AND ac.course_id !='-1' AND ac.teacher_id !='-1' AND ac.verification = '1' AND ac.department_id = '$department_id' ORDER BY c.id ASC";
+        $run_first_semester_assigned_course = mysqli_query($conn, $first_semester_assigned_course);
+        $total_first_semester_assigned_course =  mysqli_num_rows($run_first_semester_assigned_course);
+
+        $first_semester_credit_array = array();
+        while($row = mysqli_fetch_assoc($run_first_semester_assigned_course))
+        {
+            $first_semester_credit_array[]= $row['course_credit'];
+        }
+        $total_first_semester_course_credit = array_sum($first_semester_credit_array);
+
+        $i=0;
+        $first_semester_cgpa = 0;
+        $first_semester_cgpa_array = array();
+        $stdnt_id_array = array();
+        $stdnt_actual_session_array = array();
+        $stdnt_current_session_array = array();
+        while($row = mysqli_fetch_assoc($run_first_semester_result_qry))
+        {
+           
+            $total_marks = $row['total_internal'] + $row['total_final_marks'];
+            // call the gpa_counting function from gpa_counting_function.php page and find the letter grade and grade point
+            $result = gpa_counting($total_marks,$first_semester_credit_array[$i]);       
+            $letter_grade = $result[0];
+            $grade_point = $result[1];
+            
+            if($i<$total_first_semester_assigned_course)
+            {
+                $first_semester_cgpa+= $grade_point*$first_semester_credit_array[$i];
+                $i++;
+
+            }
+            if($i==$total_first_semester_assigned_course)
+            {
+                $first_semester_cgpa = $first_semester_cgpa/$total_first_semester_course_credit;
+                array_push($first_semester_cgpa_array, $first_semester_cgpa);
+                array_push($stdnt_id_array, $row['student_id']);
+                array_push($stdnt_actual_session_array,$row['actual_session']);
+                array_push($stdnt_current_session_array,$row['current_session']);
+                $i=0;
+                $first_semester_cgpa=0;
+            }
+
+        }
+        return array($stdnt_id_array, $stdnt_actual_session_array, $stdnt_current_session_array, $first_semester_cgpa_array,$first_semester_credit_array);
+    }
+     
+?>

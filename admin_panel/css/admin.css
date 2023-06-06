@@ -1,0 +1,95 @@
+:root
+{
+    --color1: #1F262D;
+    --body-color: #EEEEEE;
+    --color2: yellow;
+    --color3: black;
+    --color4: white;
+    --color5: #0d3054;
+}
+body
+{
+    font-family: 'sans-serrif';
+}
+
+.form_header
+{
+    margin-top: -24px;
+    color: var(--color4);
+    background-color: var(--color1);
+}
+
+.btn
+{
+    background-color: var(--color1);
+    color: var(--color4);
+    font-weight: bold;
+
+}
+.btn:hover
+{
+    background-color: var(--color3);
+    color: var(--color2);
+    font-weight: bold;
+}
+.link_btn
+{
+    color: var(--color5);
+    background-color: var(--color4);
+    font-weight: bold;
+    border-radius: 5%;
+    padding: 4px;
+    box-shadow: 2px 2px 2px;
+    transition: all .4s;
+}
+.link_btn:hover
+{
+    background-color: var(--color3);
+    color: var(--color2);
+    font-weight: bold;
+    box-shadow: 1px 1px 15px ;
+}
+.parent_div
+{
+    position: relative;
+    height: 100vh;
+}
+.child_div
+{
+    position:absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+.dashboard_card
+{
+    background-color: rgb(255, 253, 253);
+    padding: 10px;
+    transition: all .4s;
+}
+.dashboard_card:hover
+{
+    background-color: antiquewhite;
+}
+.table-borderless
+{
+    border: 1px groove var(--color5);
+    transition: all .2s;
+}
+.table-borderless:hover
+{
+    background-color: var(--color3);
+    color: var(--color2);
+    border:2px solid var(--color2);
+    box-shadow: 1px 1px 15px ;
+}
+.developer_img img
+{
+    border: 2px solid var(--color5);
+    padding: 5px;
+    transition: all .4s;
+}
+.developer_img img:hover 
+{
+    border-radius:50%;
+}
